@@ -1,5 +1,6 @@
 ﻿param(
-    [Parameter(Mandatory=$true)][String]$ComputerName
+    [Parameter(Mandatory=$true)][String]$ComputerName,
+    [Switch]$Force
 )
 Import-Module CAT\LogonSession -ErrorAction Stop
 $sessions = Get-LogonSession -ComputerName $ComputerName
@@ -16,6 +17,20 @@ if (-not $sessions) {
         Write-Host "Status: $status"
         Write-Host "Logon date/time: $($session.LoginTime)"
         if ($session.Locked) { Write-Host "Lock duration: $($lockdiff)m" } else { Write-Host "Session is NOT locked." }
+        # Ask for confirmation, if needed.
+        if (-not $Force) {
+            Write-Host "Confirm breaklock (type n to cancel)? " -NoNewLine
+            $resp = (Read-Host).toLower()
+            if ($resp.StartsWith('n')) {
+                Write-Host "`nAborted.`n"
+                continue
+            }
+        }
+        try {
+            $session.Logoff()
+            Write-Host "`nLock broken for $($session.UserAccount) on $ComputerName.`n"
+        } catch {
+            Write-Error "`nBreaklock failed for $($session.UserAccount) on $ComputerName!`n"
+        }
     }
-
 }
