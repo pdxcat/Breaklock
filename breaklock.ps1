@@ -29,6 +29,32 @@ if (-not $sessions) {
         try {
             $session.Logoff()
             Write-Host "`nLock broken for $($session.UserAccount) on $ComputerName.`n"
+            ###Everything below added by thunderburd###
+            
+            try {
+                $date = (Get-Date).ToShortDateString()
+                $time = (Get-Date).ToShortTimeString()
+
+                $Smtp = "mailhost.cecs.pdx.edu"
+                $From = "support@cat.pdx.edu"
+                $To = "$($session.UserName)@cecs.pdx.edu"
+                $Subject = "Your Windows Session has been Terminated"
+                $CC = "support@cat.pdx.edu"
+                $Body = "At approximately $time, on $date, I found you to have locked the screen on $ComputerName. These machines are to be left open to other users 
+as much as possible. If you need to step away from the computer for more than 15 minutes, you are required to log out.
+
+If you have a class project that requires you to be logged in for an extended period of time please run hiberfoo by completing the following steps:
+
+1. Open My Computer
+2. In the address bar type: \\frost\programs\programs\hiberfoo
+3. Double Click on the Hiberfoo icon
+4. Click submit
+
+In the meantime, we have terminated your session on $ComputerName."
+
+                Send-MailMessage -SmtpServer $Smtp -From $From -To $To -Subject $Subject -Body $Body -Cc $CC
+            } catch {
+                Write-Error "`nBreaklock spam failed to send!" 
         } catch {
             Write-Error "`nBreaklock failed for $($session.UserAccount) on $ComputerName!`n"
         }
