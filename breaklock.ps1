@@ -55,7 +55,7 @@ if (-not $sessions) {
         try {
             $session.Logoff()
             Write-Host "`nLock broken for $($session.UserAccount) on $ComputerName.`n"
-            send_spam -user ($($session.UserName) -ComputerName $ComputerName
+            send_spam -user $($session.UserName) -ComputerName $ComputerName
         } catch {
             Write-Error "`nBreaklock failed for $($session.UserAccount) on $ComputerName!`n"
         }
