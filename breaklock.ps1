@@ -1,3 +1,10 @@
+param(
+    [Parameter(Mandatory=$true)][String]$ComputerName,
+    [Switch]$Force
+)
+Import-Module CAT\LogonSession -ErrorAction Stop
+$sessions = Get-LogonSession -ComputerName $ComputerName
+
 function send_spam ($user, $ComputerName) {
     $date = (Get-Date).ToShortDateString()
     $time = (Get-Date).ToShortTimeString()
@@ -23,14 +30,6 @@ function send_spam ($user, $ComputerName) {
         Write-Error "`nSpam failed to send, please send manually."
     }
 }
-
-
-param(
-    [Parameter(Mandatory=$true)][String]$ComputerName,
-    [Switch]$Force
-)
-Import-Module CAT\LogonSession -ErrorAction Stop
-$sessions = Get-LogonSession -ComputerName $ComputerName
 
 if (-not $sessions) {
     Write-Host "$ComputerName is not loggedon."
