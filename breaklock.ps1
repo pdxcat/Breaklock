@@ -13,7 +13,7 @@ function send_spam ($user, $ComputerName) {
     $time = (Get-Date).ToShortTimeString()
 
     $mail.From = "support@cat.pdx.edu"
-    $mail.To.Add("$user@cat.pdx.edu")
+    $mail.To.Add("$user@cecs.pdx.edu")
     $mail.Subject = "Your Windows Session has been Terminated"
     $mail.CC.Add("support@cat.pdx.edu")
     $mail.Headers.Add("X-TTS", "COMP")
