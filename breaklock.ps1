@@ -61,7 +61,7 @@ if (-not $sessions) {
             }
         }
         try {
-            $session.Logoff()
+            Get-TSSession -ComputerName $ComputerName -UserName $session.UserName | Stop-TSSession -Force
             Write-Host "`nLock broken for $($session.UserAccount) on $ComputerName.`n"
             send_spam -user $($session.UserName) -ComputerName $ComputerName
         } catch {
